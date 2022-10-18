@@ -46,3 +46,31 @@ flashLoan() function has an assertion that is vulnerable to a DOS Attack:
 ```
 
 By sending DVT tokens directly to the contract and increasing the balanceBefore variable we can break the assertion since the poolBalance variable is only increased when we send DVT tokens through depositTokens() function.
+
+## Challenge #2 - Naive Receiver
+
+### Overview
+
+The naive receiver challenge consists of a Lending contract that provides flashloans and a flashloan receiver contract.
+
+Goal: drain the flashloan receiver contract.
+
+[Naive Receiver contracts code](https://github.com/jooohneth/damn-vulnerable-defi/tree/master/contracts/naive-receiver)
+
+### Solution
+
+Initiate the flashloan for receiver contract 10 times.
+
+[Solution code](https://github.com/jooohneth/damn-vulnerable-defi/blob/master/test/naive-receiver/naive-receiver.challenge.js)
+
+#### Explanation
+
+The two main functions that we need to look at are: flashLoan() function in NaiveReceiverLenderPool contract and receiveEther() function in FlashLoanReceiver contract.
+
+flashLoan() function checks eligibility and provides the flashloan.
+
+receiveEther() function receives the flashloan, initiates some function and repays the flashloan.
+
+receiveEther() function left a gap for us to exploit by not checking who initiates the flashloan, meaning anybody can call the flashLoan() function and put the FlashLoanReceiver contract as a flashloan receiver.
+
+By calling the flashLoan() function multiple times with the FlashLoanReceiver contract as parameter, we can drain the contract's balance(10 ETH). Since the fee for a flashloan is 1 ETH, it takes only 10 calls to drain the FlashLoanReceiver contract.
