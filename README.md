@@ -74,3 +74,29 @@ receiveEther() function receives the flashloan, initiates some function and repa
 receiveEther() function left a gap for us to exploit by not checking who initiates the flashloan, meaning anybody can call the flashLoan() function and put the FlashLoanReceiver contract as a flashloan receiver.
 
 By calling the flashLoan() function multiple times with the FlashLoanReceiver contract as parameter, we can drain the contract's balance(10 ETH). Since the fee for a flashloan is 1 ETH, it takes only 10 calls to drain the FlashLoanReceiver contract.
+
+## Challenge #3 - Truster
+
+### Overview
+
+The truster challenge consists of a Lending contract that provides flashloans.
+
+Goal: take all ETH in lending pool in a single transaction.
+
+[Truster contract code](https://github.com/jooohneth/damn-vulnerable-defi/tree/master/contracts/truster/TrusterLenderPool.sol)
+
+### Solution
+
+1. Create a contract that calls the flashloan function and approves all tokens inside the lending pool.
+2. Send all ETH inside the pool to the attacker.
+
+[Exploit contract code](https://github.com/jooohneth/damn-vulnerable-defi/blob/master/contracts/truster/Exploit.sol)
+[Solution code](https://github.com/jooohneth/damn-vulnerable-defi/blob/master/test/truster/truster.challenge.js)
+
+#### Explanation
+
+The main function we need to take a look at is the flashLoan() function in TrusterLenderPool contract.
+
+flashLoan() function is a simple function that provides the flashloan, but compared to other challenges this function also takes target and data as parameters to call an external function.
+
+By providing an approve function, that approves all of the tokens inside the pool to be spent by attacker, as parameter to the flashLoan() function we can then send those approved tokens to the attacker's address.
