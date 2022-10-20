@@ -90,8 +90,8 @@ Goal: take all ETH in lending pool in a single transaction.
 1. Create a contract that calls the flashloan function and approves all tokens inside the lending pool.
 2. Send all ETH inside the pool to the attacker.
 
-[Exploit contract code](https://github.com/jooohneth/damn-vulnerable-defi/blob/master/contracts/truster/Exploit.sol)
-[Solution code](https://github.com/jooohneth/damn-vulnerable-defi/blob/master/test/truster/truster.challenge.js)
+- [Exploit contract code](https://github.com/jooohneth/damn-vulnerable-defi/blob/master/contracts/truster/TrusterExploit.sol)
+- [Solution code](https://github.com/jooohneth/damn-vulnerable-defi/blob/master/test/truster/truster.challenge.js)
 
 #### Explanation
 
