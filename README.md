@@ -100,3 +100,29 @@ The main function we need to take a look at is the flashLoan() function in Trust
 flashLoan() function is a simple function that provides the flashloan, but compared to other challenges this function also takes target and data as parameters to call an external function.
 
 By providing an approve function, that approves all of the tokens inside the pool to be spent by attacker, as parameter to the flashLoan() function we can then send those approved tokens to the attacker's address.
+
+## Challenge #4 - Side entrance
+
+### Overview
+
+The side entrance challenge consists of a Lending contract that provides flashloans and allows anyone to deposit or withdraw ETH at any time.
+
+Goal: take all ETH in lending pool.
+
+[Side entrance contract code](https://github.com/jooohneth/damn-vulnerable-defi/blob/master/contracts/side-entrance/SideEntranceLenderPool.sol)
+
+### Solution
+
+1. Create a contract that takes a flashloan and deposits the funds back to the pool contract.
+2. Withdraw those funds to the attacker.
+
+- [Exploit contract code](https://github.com/jooohneth/damn-vulnerable-defi/blob/master/contracts/side-entrance/SideEntranceExploit.sol)
+- [Solution code](https://github.com/jooohneth/damn-vulnerable-defi/blob/master/test/side-entrance/side-entrance.challenge.js)
+
+#### Explanation
+
+The main function we need to take a look at is the flashLoan() function in SideEntranceLenderPool contract.
+
+flashLoan() function is a simple function that provides the flashloan and calls an external execute() function from an interface.
+
+By making our exploit contract inherit the interface and overriding the execute() function with a call to the pool contract's deposit function, we can take out a flashloan the size of the pool balance(1000 ether) and immidiately deposit the funds back, which increases our balance in the pool contract. Then withdraw those funds from the pool contract to the attacker address.
